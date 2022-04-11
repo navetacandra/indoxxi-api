@@ -346,9 +346,24 @@ class Helper {
         }
     }
 
+    // Get Embed Link
+    /**
+    * @param {String} id - Movie id
+    */
+    async #get_embed(id) {
+        let html = await loader(`${id}/play`);
+        let $ = cheerio.load(html);
+
+        // If it has eps
+        let is_series = $('#list-eps').html() ? true : false;
+
+        console.log(is_series);
+        return [];
+    }
+
     // Get All Pagination Result
     /**
-     * 
+     *
      * @param {String} type - Helper type
      * @param {Object} params - Parameter for helper
      * @param {String} params.genre - Genre for searching
@@ -454,6 +469,13 @@ class Helper {
             },
             get_detail: {
                 func: this.#get_detail,
+                params_list: ['id'],
+                params_type: {
+                    id: 'string'
+                }
+            },
+            get_embed: {
+                func: this.#get_embed,
                 params_list: ['id'],
                 params_type: {
                     id: 'string'
