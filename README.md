@@ -2,10 +2,11 @@
 
 #### Features
 
-|       Feature          | Available |
-| ---------------------- | --------- |
-| Normal Search          |     ✔️     |
-| Get Details            |     ✔️     |
-| Search by Genres       |     ✔️     |
-| Search by Country      |     ✔️     |
-| Pagination as All      |     ✔️     |
+|       Feature              | Available |
+| -------------------------- | --------- |
+| Search by Keyword          |     ✔️     |
+| Search by Genres           |     ✔️     |
+| Search by Country          |     ✔️     |
+| Get All Page Search Result |     ✔️     |
+| Get Details                |     ✔️     |
+| Get embed CDN              |     ✔️     |

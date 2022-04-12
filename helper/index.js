@@ -7,6 +7,9 @@ const {
     loader
 } = require('./fetch_site');
 
+// Environment Variable
+const indoxxi_ip = process.env.TARGET;
+
 // Helper Class
 class Helper {
 
@@ -37,7 +40,7 @@ class Helper {
     // Search by Keyword
     /**
      *
-     * @param {String} keyword
+         * @param {String} keyword
      * @param {Number} limit
      */
     async #search_movie(keyword, limit = 1) {
@@ -353,12 +356,49 @@ class Helper {
     async #get_embed(id) {
         let html = await loader(`${id}/play`);
         let $ = cheerio.load(html);
+        let sources;
 
         // If it has eps
         let is_series = $('#list-eps').html() ? true : false;
 
-        console.log(is_series);
-        return [];
+        // Execute if is movie
+        if(!is_series) {
+            // Get default play embed
+            let play_embed = html.split(`$('#vidframe').attr('src','`)[1].split(`');`)[0];
+
+            sources = await get_source_embed(play_embed);
+        }
+        // Execute if is series
+        else {
+            let eps_list = [];
+            // Get backdrop
+            let backdrop = html.split("imgbkr ='")[1].split("';")[0];
+            // Get title
+            let title = encodeURIComponent($('[itemprop="name"]').attr('content'));
+
+            // Loop btn-eps
+            $('.btn-eps').each(function() {
+                // Get url data
+                let data = $(this).attr('onclick').replace("loadVideo(", "").replace(")", "").replace(/'/g, "").split(',');
+                data.shift();
+                let svr = data[0],
+                    eps = data[1],
+                    nno = data[2],
+                    slug = data[3],
+                    tmdb = data[4];
+                // Set url
+                let url = `http://104.248.67.9/dutaxxi.com/playertv/index.php?title=${title}&site=http://104.248.67.9/dutaxxi.com&backdrop=${backdrop}&slug=${slug}&svr=${svr}&nno=${nno}&epi=${eps}&tmdb=${tmdb}`;
+                // push url to eps_list
+                eps_list.push(url);
+            });
+
+            sources = eps_list.map(async v => {
+                return await get_source_embed(v);
+            });
+            sources = await Promise.all(sources);
+        }
+
+        return sources;
     }
 
     // Get All Pagination Result
@@ -505,6 +545,59 @@ class Helper {
             return run_func;
     }
 };
+
+async function get_source_embed(url) {
+    let html = await loader(`${url.replace(indoxxi_ip, '')}`);
+
+    let sources;
+    let caption = [];
+    let links = [];
+
+    // If sources encrypt to base64
+    if(html.includes(`datasources = atob('`)) {
+        sources = html.split(`datasources = atob('`)[1].split(`');`)[0];
+        // decrypt sources
+        sources = Buffer.from(sources, 'base64').toString('binary');
+        // parsing sources
+        sources = JSON.parse(sources);
+    }
+    // If sources not encrypted
+    else {
+        // parsing sources
+        sources = html.split(`datasources = '`)[1].split(`';`)[0];
+        sources = JSON.parse(sources);
+    }
+
+    // If sources has length
+    if(sources.length) {
+        // Get caption sources
+        caption = sources.filter(v => v.length
+            ? v.filter(x => x.kind == 'captions')
+            : false)
+            .flat().filter(v => v.id !== 'off');
+        // Modified caption value
+        caption = caption.map(v => {
+            delete v.kind;
+            return v;
+        })
+        // Filter sources if has meta
+        sources = sources.filter(v => v.meta !== undefined || null);
+        // Filter cdn provider
+        sources = sources.filter(v => !/drive|vidsrc|mp4s|blogspot|cvideo/i.test(v.meta.type));
+        // Push Links if Sources not 0
+        if (sources.length > 0) {
+            sources.forEach(v => {
+                links.push(v.sources[0].file)
+            });
+        }
+    }
+
+    // return link and caption
+    return {
+        links: links.length > 0 ? links : 'links not found',
+        caption: caption.length > 0 ? caption : 'caption not found'
+    };
+}
 
 // Export Helper
 module.exports = Helper;
