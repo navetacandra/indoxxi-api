@@ -14,16 +14,6 @@ app.use(cors({ origin: '*', methods: 'GET', allowHeaders: 'Origin, X-Requested-W
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
-// Root path
-app.get('**', require('./routes/index'))
-
-// Detail path
-app.get('/detail', require('./routes/index'));
-
-// Get Embed path
-app.get('/embed', require('./routes/index'));
-
 // Search path
 app.get('/search', require('./routes/index'))
 app.get('/search/:keyword', require('./routes/index'))
@@ -36,6 +26,14 @@ app.get('/genre/:genre', require('./routes/index'))
 app.get('/country', require('./routes/index'))
 app.get('/country/:country', require('./routes/index'))
 
+// Detail path
+app.get('/detail', require('./routes/index'));
+
+// Get Embed path
+app.get('/embed', require('./routes/index'));
+
+// Random path
+app.get('**', require('./routes/index'))
 
 // Run express server
 app.listen(PORT, console.log('Running on port:', PORT));
