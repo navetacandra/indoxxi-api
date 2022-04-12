@@ -354,7 +354,7 @@ class Helper {
     * @param {String} id - Movie id
     */
     async #get_embed(id) {
-        let html = await loader(`${id}/play`);
+        let html = await loader(`/${id}/play`);
         let $ = cheerio.load(html);
         let sources;
 

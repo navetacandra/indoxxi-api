@@ -1,15 +1,22 @@
 const express = require('express');
 const router = express.Router();
 
-const { search_movie, genre_search, country_search, get_detail } = require('../controller/index');
+const { search_movie, genre_search, country_search, get_detail, get_embed } = require('../controller/index');
 
 // Root path
-router.get('/', (req, res) => {
-    res.send('ok');
+router.get('**', (req, res) => {
+    res.json({
+        author: 'navetacandra',
+        github: 'https://github.com/navetacandra/indoxxi-api',
+        message: 'see documentation in github.'
+    });
 });
 
 // Detail path
 router.get('/detail', get_detail);
+
+// Get Embed path
+router.get('/embed', get_embed);
 
 // Search path
 router.get('/search', search_movie);

@@ -16,10 +16,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 // Root path
-app.get('/', require('./routes/index'))
+app.get('**', require('./routes/index'))
 
 // Detail path
 app.get('/detail', require('./routes/index'));
+
+// Get Embed path
+app.get('/embed', require('./routes/index'));
 
 // Search path
 app.get('/search', require('./routes/index'))
