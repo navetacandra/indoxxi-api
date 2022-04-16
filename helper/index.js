@@ -276,13 +276,17 @@ class Helper {
         let html = await loader(`/${id}/play`);
         let $ = cheerio.load(html);
 
+        if(!$('h3[itemprop="name"]').text().trim()) {
+            return [];
+        }
+
         // Declare Zero Array of genre, actor, director, country
         let genres = [],
             actors = [],
             directors = [],
             countries = [],
-            sinopsis = $('meta[name="description"]').attr('content').trim(),
-            raw_title = $('h3[itemprop="name"]').text().trim();
+            sinopsis = $('meta[name="description"]').attr('content').trim() || '',
+            raw_title = $('h3[itemprop="name"]').text().trim() || '';
 
         // Get Genre List
         $('span[itemprop="genre"]').each(function () {
@@ -475,7 +479,7 @@ class Helper {
 
     /**
      *
-     * @param {String} helper - Helper name
+     * @param {String('search' | 'genre_search' | 'country_search' | 'get_detail' | 'get_embed')} helper - Helper name
      * @param {Object} params - Parameter for helper
      * @param {String} params.genre - Genre for searching
      * @param {String} params.country - Country for searching
