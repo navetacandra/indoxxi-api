@@ -118,7 +118,7 @@ class Helper {
 
         // If it has eps
         let is_series = $('#list-eps').html() ? true : false;
-
+        
         // Execute if is movie
         if (!is_series) {
             // Get default play embed
@@ -133,7 +133,7 @@ class Helper {
             let backdrop = html.split("imgbkr ='")[1].split("';")[0];
             // Get title
             let _title_ = encodeURIComponent($('[itemprop="name"]').attr('content'));
-
+            
             // Loop btn-eps
             $('.btn-eps').each(function () {
                 // Get url data
@@ -155,7 +155,7 @@ class Helper {
             });
             sources = await Promise.all(sources);
         }
-
+        
         raw.source = sources;
         // Sorting Raw Data Object by Keys
         let sorted_obj = Object.keys(raw).sort().reduce(function (result, key) {
@@ -311,6 +311,9 @@ class Helper {
     }
 };
 
+//PUBLIC_URI https://indoxxi-api1.herokuapp.com
+//TARGET http://104.248.67.9
+
 function get_movie_list($ = cheerio.load()) {
     // Declare Zero Array
     let movie_list = [];
@@ -389,6 +392,7 @@ function get_details($ = cheerio.load()) {
         countries = [],
         sinopsis = $('meta[name="description"]').attr('content').trim() || '',
         raw_title = $('h3[itemprop="name"]').text().trim() || '';
+        thumbnail = $('.thumb.mvic-thumb').find('meta[itemprop="image"]').attr('content').trim() || ';'
 
     // Get Genre List
     $('span[itemprop="genre"]').each(function () {
@@ -440,7 +444,8 @@ function get_details($ = cheerio.load()) {
         rating: $('span[itemprop="ratingValue"].irank-voters').text().trim(),
         sinopsis: sinopsis,
         title: title,
-        year: year
+        year: year,
+        thumbnail: thumbnail
     };
 
     return raw;
