@@ -40,77 +40,15 @@ class Helper {
     // Search by Keyword
     /**
      *
-         * @param {String} keyword
+     * @param {String} keyword
      * @param {Number} limit
      */
     async #search_movie(keyword, limit = 1) {
         let html = await loader(`/dutaxxi.com/search.php?keyword=${keyword}&limit=${limit}`);
         let $ = cheerio.load(html);
 
-        // Declare Zero Array
-        let movie_list = [];
-
-        // Loop Movie List
-        $('.ml-item a').each(function () {
-            // Get Link
-            let link = $(this).attr('href');
-            // Get Thumbnail Address
-            let img = $(this).find('img').attr('data-original');
-            // Get Duration
-            let duration = $(this).find('.rating-durasi .mli-durasi').text();
-            // Get Rating
-            let rating = $(this).find('.rating-durasi .mli-rating').text().replace('menit', '').trim();
-            // Get Raw Title
-            let title = $(this).find('.mli-info h2').text() || '-';
-            // Split Raw Title by Space
-            title = title.split(' ');
-
-            // Check is Title Include Year
-            let is_year = /\(|\)/.test(title[title.length - 1]) ?
-                !isNaN(title[title.length - 1].replace(/\(|\)| /g, '')) :
-                false;
-            // Get Year
-            let year = is_year ? title.pop().replace(/\(|\)| /g, '') : '-';
-            // Joining Splitted Title
-            title = title.join(' ');
-
-            // Spliting Id and Type from Link
-            let id = link.split('/');
-            id.shift()
-            let type = id.shift();
-            id = id[id.length - 1];
-
-            // Raw Data Object
-            let raw = {
-                title: title,
-                link: link,
-                img: img,
-                id: id,
-                type: type,
-                duration: duration,
-                rating: rating,
-                year: year
-            };
-
-            // If it Has Eps
-            if ($(this).find('.mli-eps').text())
-                raw.eps = $(this).find('.mli-eps').text().toLowerCase().replace('eps', '');
-            // If it Has Quality
-            if ($(this).find('.mli-quality').text())
-                raw.quality = $(this).find('.mli-quality').text() || 'TRAILER';
-
-            // Sorting Object by Key
-            let sorted_obj = Object.keys(raw).sort().reduce(function (result, key) {
-                result[key] = raw[key];
-                return result;
-            }, {});
-
-            // Push Sorted Objeck to movie_list
-            movie_list.push(sorted_obj);
-        });
-
-        // returning movie_list
-        return movie_list;
+        // returning movie list
+        return get_movie_list($);
     }
 
     // Get Movie from Genre
@@ -124,70 +62,8 @@ class Helper {
         let html = await loader(`/dutaxxi.com/listing.php?list=genre&value=${genre}&limit=${limit}`);
         let $ = cheerio.load(html);
 
-        // Declare Zero Array
-        let movie_list = [];
-
-        // Loop Movie List
-        $('.ml-item a').each(function () {
-            // Get Link
-            let link = $(this).attr('href');
-            // Get Thumbnail Address
-            let img = $(this).find('img').attr('data-original');
-            // Get Duration
-            let duration = $(this).find('.rating-durasi .mli-durasi').text();
-            // Get Rating
-            let rating = $(this).find('.rating-durasi .mli-rating').text().replace('menit', '').trim();
-            // Get Raw Title
-            let title = $(this).find('.mli-info h2').text() || '-';
-            // Split Raw Title by Space
-            title = title.split(' ');
-
-            // Check is Title Include Year
-            let is_year = /\(|\)/.test(title[title.length - 1]) ?
-                !isNaN(title[title.length - 1].replace(/\(|\)| /g, '')) :
-                false;
-            // Get Year
-            let year = is_year ? title.pop().replace(/\(|\)| /g, '') : '-';
-            // Joining Splitted Title
-            title = title.join(' ');
-
-            // Spliting Id and Type from Link
-            let id = link.split('/');
-            id.shift()
-            let type = id.shift();
-            id = id[id.length - 1];
-
-            // Raw Data Object
-            let raw = {
-                title: title,
-                link: link,
-                img: img,
-                id: id,
-                type: type,
-                duration: duration,
-                rating: rating,
-                year: year
-            };
-
-            // If it Has Eps
-            if ($(this).find('.mli-eps').text())
-                raw.eps = $(this).find('.mli-eps').text().toLowerCase().replace('eps', '');
-            // If it Has Quality
-            if ($(this).find('.mli-quality').text())
-                raw.quality = $(this).find('.mli-quality').text() || 'TRAILER';
-
-            // Sorting Object by Key
-            let sorted_obj = Object.keys(raw).sort().reduce(function (result, key) {
-                result[key] = raw[key];
-                return result;
-            }, {});
-
-            // Push Sorted Objeck to movie_list
-            movie_list.push(sorted_obj);
-        });
-
-        // returning movie_list
-        return movie_list;
+        // returning movie list
+        return get_movie_list($);
     }
 
     // Get Movie from Country
@@ -201,70 +77,8 @@ class Helper {
         let html = await loader(`/dutaxxi.com/listing.php?list=negara&value=${country}&limit=${limit}`);
         let $ = cheerio.load(html);
 
-        // Declare Zero Array
-        let movie_list = [];
-
-        // Loop Movie List
-        $('.ml-item a').each(function () {
-            // Get Link
-            let link = $(this).attr('href');
-            // Get Thumbnail Address
-            let img = $(this).find('img').attr('data-original');
-            // Get Duration
-            let duration = $(this).find('.rating-durasi .mli-durasi').text();
-            // Get Rating
-            let rating = $(this).find('.rating-durasi .mli-rating').text().replace('menit', '').trim();
-            // Get Raw Title
-            let title = $(this).find('.mli-info h2').text() || '-';
-            // Split Raw Title by Space
-            title = title.split(' ');
-
-            // Check is Title Include Year
-            let is_year = /\(|\)/.test(title[title.length - 1]) ?
-                !isNaN(title[title.length - 1].replace(/\(|\)| /g, '')) :
-                false;
-            // Get Year
-            let year = is_year ? title.pop().replace(/\(|\)| /g, '') : '-';
-            // Joining Splitted Title
-            title = title.join(' ');
-
-            // Spliting Id and Type from Link
-            let id = link.split('/');
-            id.shift()
-            let type = id.shift();
-            id = id[id.length - 1];
-
-            // Raw Data Object
-            let raw = {
-                title: title,
-                link: link,
-                img: img,
-                id: id,
-                type: type,
-                duration: duration,
-                rating: rating,
-                year: year
-            };
-
-            // If it Has Eps
-            if ($(this).find('.mli-eps').text())
-                raw.eps = $(this).find('.mli-eps').text().toLowerCase().replace('eps', '');
-            // If it Has Quality
-            if ($(this).find('.mli-quality').text())
-                raw.quality = $(this).find('.mli-quality').text() || 'TRAILER';
-
-            // Sorting Object by Key
-            let sorted_obj = Object.keys(raw).sort().reduce(function (result, key) {
-                result[key] = raw[key];
-                return result;
-            }, {});
-
-            // Push Sorted Objeck to movie_list
-            movie_list.push(sorted_obj);
-        });
-
-        // returning movie_list
-        return movie_list;
+        // returning movie list
+        return get_movie_list($);
     }
 
     // Get Detail
@@ -276,97 +90,37 @@ class Helper {
         let html = await loader(`/${id}/play`);
         let $ = cheerio.load(html);
 
-        if(!$('h3[itemprop="name"]').text().trim()) {
-            return [];
-        }
+        // Get details
+        let raw = get_details($);
+        if (!raw.title) return [];
 
-        // Declare Zero Array of genre, actor, director, country
-        let genres = [],
-            actors = [],
-            directors = [],
-            countries = [],
-            sinopsis = $('meta[name="description"]').attr('content').trim() || '',
-            raw_title = $('h3[itemprop="name"]').text().trim() || '';
+        let sorted_obj = Object.keys(raw).sort().reduce(function (result, key) {
+            result[key] = raw[key];
+            return result;
+        }, {});
 
-        // Get Genre List
-        $('span[itemprop="genre"]').each(function () {
-            genres.push($(this).text().toLowerCase());
-        });
-
-        // Get Actor List
-        $('span[itemprop="actor"] a span[itemprop="name"]').each(function () {
-            actors.push($(this).text());
-        });
-
-        // Get Director List
-        $('span[itemprop="director"] a span[itemprop="name"]').each(function () {
-            directors.push($(this).text());
-        });
-
-        // Get Country List
-        $('.mvici-right p').eq(2).find('a span').each(function () {
-            countries.push($(this).text().toLowerCase());
-        });
-
-        if (raw_title.length >= 1) {
-
-            // Spliting title and year
-            let title = raw_title.split(' ');
-            title.pop();
-            // Get Year
-            let year = $('h3[itemprop="name"] a').attr('href').includes('tahun')
-                ? $('h3[itemprop="name"] a').text().trim()
-                : '-';
-            // Joining Splitted Title
-            title = title.join(' ');
-
-            // Raw Data Object
-            let raw = {
-                genre: genres,
-                actor: actors,
-                director: directors,
-                // Get Duration
-                duration: $('.mvici-right p').eq(0).text().split(':')[1].trim().replace('menit', ''),
-                // Get Quality
-                quality: $('span.quality').text().trim(),
-                country: countries,
-                // Get Rating
-                rating: $('span[itemprop="ratingValue"].irank-voters').text().trim(),
-                sinopsis: sinopsis,
-                title: title,
-                year: year
-            };
-
-            // Sorting Raw Data Object by Keys
-            let sorted_obj = Object.keys(raw).sort().reduce(function (result, key) {
-                result[key] = raw[key];
-                return result;
-            }, {});
-
-            // returning Sorted Data Object
-            if(sorted_obj.title)
-                return sorted_obj;
-            else
-                return [];
-        } else {
-            return []
-        }
+        return sorted_obj;
     }
 
     // Get Embed Link
     /**
-    * @param {String} id - Movie id
-    */
+     * @param {String} id - Movie id
+     */
     async #get_embed(id) {
         let html = await loader(`/${id}/play`);
         let $ = cheerio.load(html);
         let sources;
 
+        // Get details
+        let raw = get_details($);
+
+        if(!raw.title) return [];
+
         // If it has eps
         let is_series = $('#list-eps').html() ? true : false;
 
         // Execute if is movie
-        if(!is_series) {
+        if (!is_series) {
             // Get default play embed
             let play_embed = html.split(`$('#vidframe').attr('src','`)[1].split(`');`)[0];
 
@@ -378,10 +132,10 @@ class Helper {
             // Get backdrop
             let backdrop = html.split("imgbkr ='")[1].split("';")[0];
             // Get title
-            let title = encodeURIComponent($('[itemprop="name"]').attr('content'));
+            let _title_ = encodeURIComponent($('[itemprop="name"]').attr('content'));
 
             // Loop btn-eps
-            $('.btn-eps').each(function() {
+            $('.btn-eps').each(function () {
                 // Get url data
                 let data = $(this).attr('onclick').replace("loadVideo(", "").replace(")", "").replace(/'/g, "").split(',');
                 data.shift();
@@ -391,7 +145,7 @@ class Helper {
                     slug = data[3],
                     tmdb = data[4];
                 // Set url
-                let url = `http://104.248.67.9/dutaxxi.com/playertv/index.php?title=${title}&site=http://104.248.67.9/dutaxxi.com&backdrop=${backdrop}&slug=${slug}&svr=${svr}&nno=${nno}&epi=${eps}&tmdb=${tmdb}`;
+                let url = `http://104.248.67.9/dutaxxi.com/playertv/index.php?title=${_title_}&site=http://104.248.67.9/dutaxxi.com&backdrop=${backdrop}&slug=${slug}&svr=${svr}&nno=${nno}&epi=${eps}&tmdb=${tmdb}`;
                 // push url to eps_list
                 eps_list.push(url);
             });
@@ -402,13 +156,20 @@ class Helper {
             sources = await Promise.all(sources);
         }
 
-        return sources;
+        raw.source = sources;
+        // Sorting Raw Data Object by Keys
+        let sorted_obj = Object.keys(raw).sort().reduce(function (result, key) {
+            result[key] = raw[key];
+            return result;
+        }, {});
+
+        return sorted_obj;
     }
 
     // Get All Pagination Result
     /**
      *
-     * @param {String} type - Helper type
+     * @param {'search' | 'genre_search' | 'country_search'} type - Helper type
      * @param {Object} params - Parameter for helper
      * @param {String} params.genre - Genre for searching
      * @param {String} params.country - Country for searching
@@ -479,7 +240,7 @@ class Helper {
 
     /**
      *
-     * @param {String('search' | 'genre_search' | 'country_search' | 'get_detail' | 'get_embed')} helper - Helper name
+     * @param {'search' | 'genre_search' | 'country_search' | 'get_detail' | 'get_embed'} helper - Helper name
      * @param {Object} params - Parameter for helper
      * @param {String} params.genre - Genre for searching
      * @param {String} params.country - Country for searching
@@ -550,6 +311,141 @@ class Helper {
     }
 };
 
+function get_movie_list($ = cheerio.load()) {
+    // Declare Zero Array
+    let movie_list = [];
+
+    // Loop Movie List
+    $('.ml-item a').each(function () {
+        // Get Link
+        let link = $(this).attr('href');
+        // Get Thumbnail Address
+        let img = $(this).find('img').attr('data-original');
+        // Get Duration
+        let duration = $(this).find('.rating-durasi .mli-durasi').text();
+        // Get Rating
+        let rating = $(this).find('.rating-durasi .mli-rating').text().replace('menit', '').trim();
+        // Get Raw Title
+        let title = $(this).find('.mli-info h2').text() || '-';
+        // Split Raw Title by Space
+        title = title.split(' ');
+
+        // Check is Title Include Year
+        let is_year = /\(|\)/.test(title[title.length - 1]) ?
+            !isNaN(title[title.length - 1].replace(/\(|\)| /g, '')) :
+            false;
+        // Get Year
+        let year = is_year ? title.pop().replace(/\(|\)| /g, '') : '-';
+        // Joining Splitted Title
+        title = title.join(' ');
+
+        // Spliting Id and Type from Link
+        let id = link.split('/');
+        id.shift()
+        let type = id.shift();
+        id = id[id.length - 1];
+
+        // Raw Data Object
+        let raw = {
+            title: title,
+            link: link,
+            img: img,
+            id: id,
+            type: type,
+            duration: duration,
+            rating: rating,
+            year: year
+        };
+
+        // If it Has Eps
+        if ($(this).find('.mli-eps').text())
+            raw.eps = $(this).find('.mli-eps').text().toLowerCase().replace('eps', '');
+        // If it Has Quality
+        if ($(this).find('.mli-quality').text())
+            raw.quality = $(this).find('.mli-quality').text() || 'TRAILER';
+
+        // Sorting Object by Key
+        let sorted_obj = Object.keys(raw).sort().reduce(function (result, key) {
+            result[key] = raw[key];
+            return result;
+        }, {});
+
+        // Push Sorted Objeck to movie_list
+        movie_list.push(sorted_obj);
+    });
+
+    // returning movie_list
+    return movie_list;
+}
+
+function get_details($ = cheerio.load()) {
+    if (!$('h3[itemprop="name"]').text().trim()) {
+        return {};
+    }
+
+    let genres = [],
+        actors = [],
+        directors = [],
+        countries = [],
+        sinopsis = $('meta[name="description"]').attr('content').trim() || '',
+        raw_title = $('h3[itemprop="name"]').text().trim() || '';
+
+    // Get Genre List
+    $('span[itemprop="genre"]').each(function () {
+        genres.push($(this).text().toLowerCase());
+    });
+
+    // Get Actor List
+    $('span[itemprop="actor"] a span[itemprop="name"]').each(function () {
+        actors.push($(this).text());
+    });
+
+    // Get Director List
+    $('span[itemprop="director"] a span[itemprop="name"]').each(function () {
+        directors.push($(this).text());
+    });
+
+    // Get Country List
+    $('.mvici-right p').eq(2).find('a span').each(function () {
+        countries.push($(this).text().toLowerCase());
+    });
+
+    // Splitting string not splitted
+    genres = genres.map(v => v.split(',')).flat();
+    actors = actors.map(v => v.split(',')).flat();
+    directors = directors.map(v => v.split(',')).flat();
+    countries = countries.map(v => v.split(',')).flat();
+
+    // Spliting title and year
+    let title = raw_title.split(' ');
+    title.pop();
+    // Get Year
+    let year = $('h3[itemprop="name"] a').attr('href').includes('tahun') ?
+        $('h3[itemprop="name"] a').text().trim() :
+        '-';
+    // Joining Splitted Title
+    title = title.join(' ');
+
+    // Raw Data Object
+    let raw = {
+        genre: genres,
+        actor: actors,
+        director: directors,
+        // Get Duration
+        duration: $('.mvici-right p').eq(0).text().split(':')[1].trim().replace('menit', ''),
+        // Get Quality
+        quality: $('span.quality').text().trim(),
+        country: countries,
+        // Get Rating
+        rating: $('span[itemprop="ratingValue"].irank-voters').text().trim(),
+        sinopsis: sinopsis,
+        title: title,
+        year: year
+    };
+
+    return raw;
+}
+
 async function get_source_embed(url) {
     let html = await loader(`${url.replace(indoxxi_ip, '')}`);
 
@@ -558,7 +454,7 @@ async function get_source_embed(url) {
     let links = [];
 
     // If sources encrypt to base64
-    if(html.includes(`datasources = atob('`)) {
+    if (html.includes(`datasources = atob('`)) {
         sources = html.split(`datasources = atob('`)[1].split(`');`)[0];
         // decrypt sources
         sources = Buffer.from(sources, 'base64').toString('binary');
@@ -573,11 +469,11 @@ async function get_source_embed(url) {
     }
 
     // If sources has length
-    if(sources.length) {
+    if (sources.length) {
         // Get caption sources
-        caption = sources.filter(v => v.length
-            ? v.filter(x => x.kind == 'captions')
-            : false)
+        caption = sources.filter(v => v.length ?
+                v.filter(x => x.kind == 'captions') :
+                false)
             .flat().filter(v => v.id !== 'off');
         // Modified caption value
         caption = caption.map(v => {

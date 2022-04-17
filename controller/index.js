@@ -36,6 +36,7 @@ const genre_search = async function (req, res) {
         } else {
             res.json({
                 status: 'error',
+                genre: genre,
                 message: 'no results found'
             })
         }
@@ -123,7 +124,7 @@ const get_embed = async function (req, res) {
         }
     } else {
         res.json({
-            status: 'success',
+            status: 'error',
             message: 'no id'
         });
     }
