@@ -4,7 +4,7 @@ const Helper = require('./helper/index');
 const helper = new Helper();
 
 (async function () {
-    console.table(await helper.get_all_pagination_result('search', {
-        keyword: 'war game'
+    console.log(await helper.use_helper('get_detail', {
+        id: 'movie/spider-man-homecoming-6rjn'
     }));
 })();

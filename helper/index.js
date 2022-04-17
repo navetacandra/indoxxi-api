@@ -133,7 +133,7 @@ class Helper {
             let backdrop = html.split("imgbkr ='")[1].split("';")[0];
             // Get title
             let _title_ = encodeURIComponent($('[itemprop="name"]').attr('content'));
-            
+
             // Loop btn-eps
             $('.btn-eps').each(function () {
                 // Get url data
@@ -155,7 +155,7 @@ class Helper {
             });
             sources = await Promise.all(sources);
         }
-        
+
         raw.source = sources;
         // Sorting Raw Data Object by Keys
         let sorted_obj = Object.keys(raw).sort().reduce(function (result, key) {
@@ -390,7 +390,7 @@ function get_details($ = cheerio.load()) {
         actors = [],
         directors = [],
         countries = [],
-        sinopsis = $('meta[name="description"]').attr('content').trim() || '',
+        sinopsis = $('div[itemprop="description"].desc span').text().trim() || '',
         raw_title = $('h3[itemprop="name"]').text().trim() || '';
         thumbnail = $('.thumb.mvic-thumb').find('meta[itemprop="image"]').attr('content').trim() || ';'
 
