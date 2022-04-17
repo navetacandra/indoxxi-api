@@ -202,7 +202,7 @@ class Helper {
         };
 
         // Declare Array of Number
-        let number_list = Array(200).fill(0).map((_, i) => (i + 1));
+        let number_list = Array(100).fill(0).map((_, i) => (i + 1));
 
         // Get Helper by type
         let help = helper_list[type];
@@ -216,11 +216,15 @@ class Helper {
 
         // Loop Array of number
         let raw_data = await Promise.all(number_list.map(async function (el) {
-            // returning Helper results
-            return await help.func(params[help.params_list[0]], el);
+            try {
+                // returning Helper results
+                return await help.func(params[help.params_list[0]], el);
+            } catch (e) {
+                return undefined;
+            }
         }));
 
-        raw_data = raw_data.filter(v => v.length >= 1).flat();
+        raw_data = raw_data.filter(v => v !== undefined).filter(v => v.length >= 1).flat();
         let data = [],
             temp_id = [];
 
